@@ -6,30 +6,19 @@ bucketname = "cf-templates-gqptnqyrfxr9-eu-west-1"
 data = {}
 def lambda_handler(event, context):
     try:
-        print(str(event))
-        if event is None:
+        valid = validateData(event)
+        if not valid[0] :
             return {
                 "statusCode" : 500,
-                "body" : "Payload Empty"
+                "body" : valid[1]
             }
-        if not "Readings" in event:
-            return {
-                "statusCode" : 500,
-                "body" : "No Readings in Payload"
-            }
-        if not "SensorType" in event:
-            return {
-                "statusCode" : 500,
-                "body" : "No SensorType in Payload"
-            }
-        filename = str(event["SensorType"]) + ".json"
-        buck = check_lambda_connection()
+        filename = "AggregatorMemory/"+str(event["SensorType"]) + ".json"
+        buck = checkBucketExists()
         if buck is None:
             return {
                 "statusCode" : 500,
-                "body" : "Data received. Error saving data because bucket not found. Try again later . . ."
+                "body" : "Data received. Error saving data because bucket not . Try again later . . ."
             }
-        
         try:
             boto3.client('s3').download_file(bucketname, filename, "/tmp/update.json")
         except:
@@ -59,7 +48,7 @@ def lambda_handler(event, context):
             "body" : "An exception has occured: StackTrace : \n" + str(e)
         }
         raise e
-def check_lambda_connection():
+def checkBucketExists():
     try:
         s3 = boto3.resource("s3")
         s3.meta.client.head_bucket(Bucket=bucketname)
@@ -67,3 +56,11 @@ def check_lambda_connection():
         return s3.Bucket(bucketname)
     except:
         return None
+def validateData(event):
+    if event is None:
+        return (False, "Payload Empty")
+    if not "Readings" in event:
+        return (False, "No Readings in Payload")
+    if not "SensorType" in event:
+        return (False, "No SensorType in Payload")
+    return (True,)

@@ -7,7 +7,7 @@ from random import randint
 tempFile = "D:/Study/Project4/tempFile.json"
 sensorID = "TemperatureSensor_1"
 sensorType = "Temperature"
-functionName = 'arn:aws:lambda:eu-west-1:023947881979:function:sendReceiveDataHopefully'
+functionNameAggregator = 'arn:aws:lambda:eu-west-1:023947881979:function:sendReceiveDataHopefully'
 invocationType = 'RequestResponse'
 sensor = {"SensorType" : sensorType}
 value = 0
@@ -29,7 +29,7 @@ def updatePayload(data):
     })
     return data
 
-def tryConnection(data):
+def tryConnection(data, functionName):
     client = boto3.client("lambda")
     try:
         data.update(sensor)
@@ -56,7 +56,7 @@ def sendDataToAggregator(data):
     try:
         data = updatePayload(data)
         
-        if not tryConnection(data):
+        if not tryConnection(data, functionNameAggregator):
             #TODO: Send to Pedometer for data offloading - IF failed, save to file.
             
             with open(tempFile, "w+") as jsonFile:
@@ -81,7 +81,7 @@ def checkLoadDataFromTempFile():
     if os.path.exists(tempFile):
         with open(tempFile, "r") as jsonFile:
             data = json.load(jsonFile)
-    os.remove(tempFile)
+        os.remove(tempFile)
     
 
 while True:
