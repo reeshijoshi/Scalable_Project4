@@ -10,6 +10,11 @@ sensorType = "Temperature"
 functionName = 'arn:aws:lambda:eu-west-1:023947881979:function:sendReceiveDataHopefully'
 invocationType = 'RequestResponse'
 sensor = {"SensorType" : sensorType}
+value = 0
+message = ""
+alert = False
+data = {}
+
 class SomethingWentWrong(Exception):
     pass
 def updatePayload(data):
@@ -61,11 +66,8 @@ def sendDataToAggregator(data):
         print(str(e))
         return False
 
-while True:
+def getCurrentReading():
     value = randint(35, 44)
-    message = ""
-    alert = False
-    data = {}
     if value > 40:
         if value >= 43:
             message = "Very High"
@@ -74,9 +76,16 @@ while True:
             message = "High"
     else:
         message = "OK"
+
+def checkLoadDataFromTempFile():
     if os.path.exists(tempFile):
         with open(tempFile, "r") as jsonFile:
             data = json.load(jsonFile)
     os.remove(tempFile)
+    
+
+while True:
+    getCurrentReading()
+    checkLoadDataFromTempFile()
     sendDataToAggregator(data)
-    time.sleep(10)  
+    time.sleep(10)
