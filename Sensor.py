@@ -10,7 +10,8 @@ sensorType = "Temperature"
 functionName = 'arn:aws:lambda:eu-west-1:023947881979:function:sendReceiveDataHopefully'
 invocationType = 'RequestResponse'
 sensor = {"SensorType" : sensorType}
-
+class SomethingWentWrong(Exception):
+    pass
 def updatePayload(data):
     if not "Readings" in data:
         data["Readings"] = []
@@ -35,8 +36,11 @@ def tryConnection(data):
         Payload=json.dumps(data),
         )
         responsePayload = json.loads(response['Payload'].read().decode("utf-8"))
+        statusCode = int(responsePayload["statusCode"])
+        if (statusCode != 200) :
+            raise SomethingWentWrong("Status Code is not 200. Received response payload body as " + str(responsePayload["body"]))
         print("Response Payload = " + str(responsePayload["body"]))
-        print("StatusCode received = " + str(responsePayload["statusCode"]))
+        print("StatusCode received = " + str(statusCode))
         print("Sent to Aggregator at " + functionName + " successfully")
         return True
     except Exception as e:
@@ -48,7 +52,8 @@ def sendDataToAggregator(data):
         data = updatePayload(data)
         
         if not tryConnection(data):
-            #TODO Send to Pedometer for data offloading - IF failed, save to file.
+            #TODO: Send to Pedometer for data offloading - IF failed, save to file.
+            
             with open(tempFile, "w+") as jsonFile:
                 json.dump(data, jsonFile)
         return True
@@ -71,9 +76,7 @@ while True:
         message = "OK"
     if os.path.exists(tempFile):
         with open(tempFile, "r") as jsonFile:
-            data = json.load(jsonFile)   
+            data = json.load(jsonFile)
+    os.remove(tempFile)
     sendDataToAggregator(data)
-    time.sleep(10)
-
-
-    
+    time.sleep(10)  
