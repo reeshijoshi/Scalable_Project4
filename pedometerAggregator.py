@@ -1,7 +1,7 @@
 import json
 import boto3
 import os
-bucketname = "scalable-project4-aggregator-bucket"
+bucketname = "scalable-project4-pedometer-bucket"
 
 data = {}
 def lambda_handler(event, context):
@@ -12,12 +12,12 @@ def lambda_handler(event, context):
                 "statusCode" : 500,
                 "body" : valid[1]
             }
-        filename = "AggregatorMemory/"+str(event["SensorType"]) + ".json"
+        filename = "PedometerMemory/"+str(event["SensorType"]) + ".json"
         buck = checkBucketExists()
         if buck is None:
             return {
                 "statusCode" : 500,
-                "body" : "Data received. Error saving data because bucket not found. Try again later . . ."
+                "body" : "Data received. Error saving data because bucket not . Try again later . . ."
             }
         try:
             boto3.client('s3').download_file(bucketname, filename, "/tmp/update.json")
