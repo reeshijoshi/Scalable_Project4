@@ -16,7 +16,7 @@ value = 0
 message = ""
 alert = False
 data = {}
-
+cfg = botocore.config.Config(connect_timeout = 5, read_timeout = 5)
 class SomethingWentWrong(Exception):
     pass
 def updatePayload(data):
@@ -35,7 +35,7 @@ def updatePayload(data):
     return data
 
 def tryConnection(data, functionName):
-    client = boto3.client("lambda")
+    client = boto3.client("lambda", config = cfg)
     try:
         data.update(sensor)
         print("Request Payload = " + str(data))

@@ -1,10 +1,17 @@
 import json
 import boto3
 import os
+import time
+from random import randint
 bucketname = "scalable-project4-pedometer-bucket"
-
+rand = randint(0,5)
+flag = False
+if rand > 3:
+    flag = True
 data = {}
 def lambda_handler(event, context):
+    if flag:
+        time.sleep(10)
     try:
         valid = validateData(event)
         if not valid[0] :
@@ -29,7 +36,14 @@ def lambda_handler(event, context):
             data = json.load(f)
         
         for i in event["Readings"]:
-            data["Readings"].append(i)
+            if event["SensorType"] == "Pedometer":
+                if len(data["Readings"]) == 0:
+                    data["Readings"] = event["Readings"]
+                else:
+                    data["Readings"][0]["Value"] = int(data["Readings"][0]["Value"]) + int(event["Readings"][0]["Value"])
+                    data["Readings"][0]["TimeStamp"] = event["Readings"][0]["TimeStamp"]
+            else:
+                data["Readings"].append(i)
             
         with open("/tmp/update.json", "w+") as f:
             json.dump(data, f)
