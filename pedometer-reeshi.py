@@ -10,12 +10,14 @@ sensorType = "Pedometer"
 
 functionNameAggregator = 'arn:aws:lambda:eu-west-1:023947881979:function:sendReceiveDataHopefully'
 functionNamePedometer = 'arn:aws:lambda:eu-west-1:023947881979:function:pedometerSecondaryAggregator'
+functionPedometerToAggregator = 'arn:aws:lambda:eu-west-1:023947881979:function:pedometerToAggregatorFlush'
 invocationType = 'RequestResponse'
 sensor = {"SensorType" : sensorType}
 value = 0
 message = ""
 alert = False
 data = {}
+empty = {}
 cfg = botocore.config.Config(connect_timeout = 5, read_timeout = 5)
 class SomethingWentWrong(Exception):
     pass
@@ -60,7 +62,14 @@ def tryConnection(data, functionName):
 def sendDataToAggregator(data):
     try:
         data = updatePayload(data)
-        if not tryConnection(data, functionNameAggregator):
+        if tryConnection(data, functionNameAggregator):
+            response = client.invoke(
+                FunctionName=functionPedometerToAggregator,
+                InvocationType=invocationType,
+                LogType='Tail',
+                Payload=json.dumps(empty),
+                )
+        else:
             if not tryConnection(data, functionNamePedometer):
                 with open(tempFile, "w+") as jsonFile:
                     json.dump(data, jsonFile)
