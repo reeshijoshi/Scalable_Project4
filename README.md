@@ -9,7 +9,7 @@ Lambda.py => AWS Lambda which acts as an Aggregator
 Create S3 bucket:
 1. Go to S3 buckets module in AWS console.
 2. Click on "Create Bucket"
-3. Enter bucket name.
+3. Enter bucket name, for example:scalable-computing-project4.
 4. Create the bucket with default settings.
 
 Create Lambda:
@@ -28,13 +28,15 @@ Add Trigger to Lambda:
 Create S3 bucket for the aggregator:
 1. Go to S3 buckets module in AWS console.
 2. Click on "Create Bucket"
-3. Enter bucket name: "aggregator"
+3. Enter bucket name, for example: aggregator.
 4. Create the bucket with default settings.
 
 Create Lambda:
 1.	Navigate to the AWS Lambda console. Click "Create New Function"
 2.	Create a blank template
 3.	Copy code from aggregatorToFog.py and paste in the lambda handler
+    Replace the sourceBucketName with the name of the bucket you just created, "aggregator" in our case.
+    Replace the destBucketName with the name of the fog bucket that you created, "scalable-computing-project4" in our case.
 4.	Create Function and name it "aggregatorToFog".
 
 Add Trigger to Lambda:
