@@ -50,7 +50,7 @@ Add Trigger to Lambda:
 4.	Click on add
 
 
-# Running the sensors
+# Running the sensors:
 
 1. Create new python files for each of the sensors viz. Temperature, Glucose and Pedometer and paste their corresponding codes from the repo.
 1. Open the command prompt and navigate to the folder/s containing the defined sensors.
