@@ -17,6 +17,10 @@ Create Lambda:
 2. Create a blank template
 3. Copy code from `fogToCloud.py` and paste in the lambda handler
 4. Create Function.
+5. Go to Identity access management -> Roles
+6. Search for the function name.
+7. Click "Attach Policy"
+8. Add S3 bucket policy.
 
 Add Trigger to Lambda:
 1. Click on "Add Trigger"
