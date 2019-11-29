@@ -34,8 +34,8 @@ Create S3 bucket for the aggregator:
 Create Lambda:
 1.	Navigate to the AWS Lambda console. Click "Create New Function"
 2.	Create a blank template
-3.	Copy code from aggregatorToFog.py and paste in the lambda handler
-    Replace the sourceBucketName with the name of the bucket you just created, "aggregator" in our case.
+3.	Copy code from aggregatorToFog.py and paste in the lambda handler.\
+    Replace the sourceBucketName with the name of the bucket you just created, "aggregator" in our case.\
     Replace the destBucketName with the name of the fog bucket that you created, "scalable-computing-project4" in our case.
 4.	Create Function and name it "aggregatorToFog".
 
