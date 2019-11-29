@@ -23,3 +23,22 @@ Add Trigger to Lambda:
 2. Select S3 from the "Select Trigger" dopdown.
 3. Select the Bucket you created.
 4. Click on add 
+
+# Aggregator to Fog Setup:
+Create S3 bucket for the aggregator:
+1. Go to S3 buckets module in AWS console.
+2. Click on "Create Bucket"
+3. Enter bucket name: "aggregator"
+4. Create the bucket with default settings.
+
+Create Lambda:
+1.	Navigate to the AWS Lambda console. Click "Create New Function"
+2.	Create a blank template
+3.	Copy code from aggregatorToFog.py and paste in the lambda handler
+4.	Create Function and name it "aggregatorToFog".
+
+Add Trigger to Lambda:
+1.	Click on "Add Trigger"
+2.	Select S3 from the "Select Trigger" dropdown.
+3.	Select the Bucket "aggregator" you just created.
+4.	Click on add
